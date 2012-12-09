@@ -6,7 +6,7 @@ var HomePage = function(){
 }
 
 HomePage.prototype.load = function() {
-    
+/*    
     if(!navigator.geolocation) {
         navigator.geolocation = {};
     }
@@ -16,7 +16,7 @@ HomePage.prototype.load = function() {
     navigator.geolocation.getCurrentPosition(this.getZipcode);
     $("#zipcodeTxt").val(this.zipcodeTxt);
 }
-
+*/
 HomePage.prototype.handleNoGeolocation = function() {
 	//Check if anything in local storage. Else, leave blank.
 
