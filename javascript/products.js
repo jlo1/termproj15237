@@ -53,6 +53,7 @@ ProductsPage.prototype.load = function() {
 }
 
 function search(e){
+    $("#productsPage #productContent").html("");
     var term = $("#searchterm").val();
     $.ajax({
         url: '/getProducts',
