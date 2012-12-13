@@ -231,6 +231,7 @@ function addCartSuccess(data){
         h1.html(data.products[i].name);
         h2.html(data.amounts[i]+" "+data.units[i]+", at $"+data.products[i].prices[data.products[i].units.indexOf(data.units[i])].toFixed(2)+" each");
         x.html("X"); 
+        x.on(window.util.eventstr, removeFromCart);
         itemId.attr("id", data.products[i]._id);
         itemAmount.attr("id", data.amounts[i]);
         itemUnit.attr("id", data.units[i]);
@@ -243,7 +244,6 @@ function addCartSuccess(data){
     $("#cartPrice").html(totalCost.toFixed(2));
     $("#confirmPrice").html($("#cartPrice").html());
 
-    $("#checkoutPage .itemDetails .X").on(window.util.eventstr, removeFromCart);
     
 }
 
