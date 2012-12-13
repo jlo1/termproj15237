@@ -9,8 +9,8 @@ var Product = new Schema({
     category: [String],
     farm: {type: Schema.ObjectId, ref: 'Farm'},
     price: {units: [String], costs: [Number]}
-
 });
+
 Product.methods.validPassword = function(pwd){
     return(this.password===pwd);
 }
