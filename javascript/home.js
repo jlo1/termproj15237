@@ -6,16 +6,15 @@ var HomePage = function(){
 }
 
 HomePage.prototype.load = function() {
-    /*
+    
     if(!navigator.geolocation) {
         navigator.geolocation = {};
     }
     if(!navigator.geolocation.getCurrentPosition) {
         navigator.geolocation.getCurrentPosition = this.handleNoGeolocation();
     }
-    navigator.geolocation.getCurrentPosition(this.getZipcode);
-*/
-	this.handleNoGeolocation();
+    navigator.geolocation.getCurrentPosition(this.getZipcode, this.handleNoGeolocation());
+
     $("#zipcodeTxt").val(this.zipcodeTxt);
 
     $("#zipcodeTxt").keyup(function(e) {
@@ -55,6 +54,7 @@ HomePage.prototype.handleNoGeolocation = function() {
 }
 
 HomePage.prototype.getZipcode = function(position) {
+	alert("geolocated");
 	console.log("has geolocation, getting current location");
 	var lat = position.coords.latitude;
 	var lng = position.coords.longitude;
