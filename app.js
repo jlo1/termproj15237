@@ -69,7 +69,9 @@ app.post('/checkoutPay', checkoutPay);
 app.all("/addToCart", addToCart);
 app.all("/getCart", getCart);
 app.all("/removeFromCart", removeFromCart);
+app.all("/confirmOrder", confirmOrder);
 
+fs.writeFile(__dirname+"/orders.txt", "Product ID\t\t\tAmount\tUnit\tCustomer ID\n");
 
 /*
  * Routing handlers.
@@ -438,6 +440,35 @@ function removeFromCart(req, res){
         res.end();
     });
     
+}
+
+function confirmOrder(req, res){
+    if(req.user === undefined){
+        res.status(401);
+        res.end();
+        return;
+    }
+
+    Customer.findById(req.user.id, function(err, customer){
+        if(!customer){
+            res.status(401);
+            res.end();
+            return;
+        }
+        var strings = "";
+        for(var i = 0; i < req.body.products.length; i++){
+            strings = strings+req.body.products[i]+"\t"+req.body.amounts[i]+"\t"+req.body.units[i]+"\t"+req.user.id+"\n";
+        }
+        fs.appendFile(__dirname + "/orders.txt", strings, function(err){
+            if(err){
+                console.log(err);
+                res.status(500);
+            }
+            res.status(200);
+            res.end();
+        });
+    });
+
 }
 /*
  * Initialize passport settings for our authentication policy
