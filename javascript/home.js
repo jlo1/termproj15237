@@ -1,7 +1,8 @@
 
 var HomePage = function(){
     this.div = $('#homePage');
-    this.zipcodeTxt = "";
+    this.zipcodeTxt = "test";
+    this.latlng;
     this.load();
 }
 
@@ -11,12 +12,12 @@ HomePage.prototype.load = function() {
         navigator.geolocation = {};
     }
     if(!navigator.geolocation.getCurrentPosition) {
-        navigator.geolocation.getCurrentPosition = this.handleNoGeolocation();
+        navigator.geolocation.getCurrentPosition = this.handleNoGeolocation;
     }
-    navigator.geolocation.getCurrentPosition(this.getZipcode, this.handleNoGeolocation());
+    navigator.geolocation.getCurrentPosition(
+    	this.getZipcode.bind(this), this.handleNoGeolocation.bind(this));
 
-    $("#zipcodeTxt").val(this.zipcodeTxt);
-
+    //trigger search btn click on "enter" key
     $("#zipcodeTxt").keyup(function(e) {
         if (e.which === 13) {
             this.loadZipcodeSearch.bind(this);
@@ -49,33 +50,39 @@ HomePage.prototype.handleNoGeolocation = function() {
 	if (lastZipCode !== "") {
 		this.zipcodeTxt = lastZipCode;
 	}
+    $("#zipcodeTxt").val(this.zipcodeTxt);
+
 
 
 }
 
 HomePage.prototype.getZipcode = function(position) {
-	alert("geolocated");
 	console.log("has geolocation, getting current location");
 	var lat = position.coords.latitude;
 	var lng = position.coords.longitude;
 
-	//set up google maps api
-	loadGoogleMapScript();
+	var geocoder = new google.maps.Geocoder();
+	this.latlng = new google.maps.LatLng(lat, lng);
 
+	geocoder.geocode({'latLng':this.latlng}, function(results, status) {
+		if(status !== google.maps.GeocoderStatus.OK) {
+			this.handleNoGeolocation();
+			return;
+		}
+
+		var addrcomp = results[0].address_components;
+
+        for(var i = 0; i < addrcomp.length; i++){
+            if(addrcomp[i].types.indexOf("postal_code") > -1) {
+                this.zipcodeTxt = addrcomp[i].short_name;
+    			$("#zipcodeTxt").val(this.zipcodeTxt);
+            	return;
+            }
+        }
+
+	}.bind(this));
 
 
 }
 
-/*Load the Google Map API V3. Calls initializeGMScript after using "callback"
-*/
-HomePage.prototype.loadGoogleMapScript = function() {
-    var gmScript = document.createElement("script");
-    gmScript.type = "text/javascript";
-    gmScript.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyCZGQVJhejmgfv4TdZJ1M0U4JXKweG4Bng&sensor=true&callback=initializeGMScript";
-    document.body.appendChild(gmScript);
-}
 
-/*Function called once google api is loaded*/
-function initializeGMScript() {
-
-}

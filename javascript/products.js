@@ -106,9 +106,9 @@ function gotProducts(data){
         itemDetails.append(h1).append(p);
         itemAmount.append(input).append(select);
 
-        itemId.attr("id", data.nameResults[i].id);
+        itemId.attr("id", data.nameResults[i]._id);
         finalizeBlock.append(priceBlock).append(addBtn);
-        itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount).append(finalizeBlock);
+        itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount).append(finalizeBlock).append(itemId);
 
         container.append(itemBlock);
 
@@ -133,7 +133,7 @@ function updatePrice(data) {
 }
 
 function addToCart(event){
-    var targ = $(event.target);
+    var targ = $(event.target).closest(".itemBlock");
     var amount = parseInt(targ.find(".amountNumber").val());
     var options = targ.find(".amountUnit").children();
     var id = targ.find(".itemId").attr("id");

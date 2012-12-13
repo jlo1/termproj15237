@@ -353,7 +353,6 @@ function addToCart(req, res){
         customer.products.push(req.body.product);
         res.status(200);
         res.end();
-        });
     });
 }
 /*
