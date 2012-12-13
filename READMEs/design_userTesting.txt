@@ -1,0 +1,37 @@
+Design Process, User Testing, and Iterative Design
+
+Design Process:
+	- Our design process is logged onto this google doc:
+	https://docs.google.com/document/d/1J7Tom5xQx5yerUZ4feDtwu15hFatSwYCkOkzDR8a_2I/edit
+
+	- We started out with possible looks of different pages on the
+	customer app
+	- We then looked into how the user would want to see/search for
+	products and navigate through the pages.
+	- Comparative analysis was done with other similar apps that allowed
+	users to order things and checkout (ie: orderpitt.com, groupon.com,
+	grubhub.com), as well as websites with similar purposes with farms
+	(ie: wholefoods.com, localharvest.org).
+	- Looking at the vastness of this project, we decided to focus on the
+	customer mobile app, and just create a simple farmer app due to the
+	limited time we had before the semester ended.
+
+
+User Testing:
+	After getting a simple structure of our app going, we did some user
+	testing.
+	Feedback is listed below (Followed by hopeful fixes in
+	parenthesis):
+	- Separate the customer and farmer into two separate apps. (Don't 
+	have page that lets you choose if you're a farmer or customer)
+	- It is hard to tell how to add a product to the cart. We only had
+	input fields of amount to purchase, but no button. (Add a button)
+	- The footer moves up everytime the keyboard appears. Takes up too
+	much of the screen. (Keep footer fixed to bottom of screen even
+	if keyboard appears)
+	- It'd be a nice functionality to have sales/featured items show up
+	on the search/browse page. (Not sure if we will get to this...)
+	- The login page takes me directly to checkout page sometimes. (This
+	is because when the user was in the checkout page and needed to Sign in
+	before checking out, he no longer wanted to checkout and continued
+	browsing pages then logged in afterwards.)
