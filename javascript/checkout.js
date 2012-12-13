@@ -85,6 +85,7 @@ CheckoutPage.prototype.load = function() {
         else if($(e.target).attr('id') === "confirmContinueBtn") {
             /*Change button to text of confirmation of payment*/
             postToChargeCard.bind(this)();
+            confirmOrder();
             return;
         }
 
@@ -96,9 +97,9 @@ CheckoutPage.prototype.load = function() {
             }
 
 
-            if(thisPage.itemCount === 0) {
+            if($("#itemCount").html() == "0") {
                 alert("No items added to cart");
-                //return;
+                return;
             }
             this.updateAmountInCents.bind(this)();
             /*TODO: Check user authentication/login/register...*/
@@ -203,12 +204,16 @@ function addCartSuccess(data){
     $("#productList").html("");
     if(data.products === undefined){
         console.log("empty cart");
+        $("#itemCount").html("0");
+        $("#cartPrice").html("0.00");
         return;
     }
     if(data.products.length === 0){
         console.log("empty");
+        $("#itemCount").html(data.products.length);
+        $("#cartPrice").html("0.00");
     }
-    var container, itemBlock, itemDetails, h1, h2, itemAmount, x, itemId;
+    var container, itemBlock, itemDetails, h1, h2, itemAmount, x, itemId, itemAmount, itemUnit;
     $("#itemCount").html(data.products.length);
     console.log(data);
     var totalCost = 0;
@@ -219,21 +224,49 @@ function addCartSuccess(data){
         h1 = $(document.createElement("h1"));
         h2 = $(document.createElement("h2"));
         farmDist = $(document.createElement("span"));
-        itemAmount = $(document.createElement("div")).addClass("itemAmount");
         x = $(document.createElement("span")).addClass("X");
         itemId = $(document.createElement("div")).addClass("itemId");
+        itemAmount = $(document.createElement("div")).addClass("itemAmount");
+        itemUnit = $(document.createElement("div")).addClass("itemUnit");
         h1.html(data.products[i].name);
         h2.html(data.amounts[i]+" "+data.units[i]+", at $"+data.products[i].prices[data.products[i].units.indexOf(data.units[i])].toFixed(2)+" each");
         x.html("X"); 
         itemId.attr("id", data.products[i]._id);
+        itemAmount.attr("id", data.amounts[i]);
+        itemUnit.attr("id", data.units[i]);
         itemDetails.append(h1).append(x).append(h2);
-        itemBlock.append(itemDetails).append(itemAmount).append(itemId);
+        itemBlock.append(itemDetails).append(itemAmount).append(itemId).append(itemUnit);
         container.append(itemBlock);
 
         totalCost += data.products[i].prices[data.products[i].units.indexOf(data.units[i])] * data.amounts[i];
     }
     $("#cartPrice").html(totalCost.toFixed(2));
+    $("#confirmPrice").html($("#cartPrice").html());
 
     $("#checkoutPage .itemDetails .X").on(window.util.eventstr, removeFromCart);
     
+}
+
+function confirmOrder(){
+    var products = [];
+    var amounts = [];
+    var units = [];
+
+    var itemBlocks = $("#checkoutPage .itemBlock");
+    for(var i = 0; i < itemBlocks.length; i++){
+        products.push($(itemBlocks[i]).find(".itemId").attr("id"));
+        units.push($(itemBlocks[i]).find(".itemUnit").attr("id"));
+        amounts.push($(itemBlocks[i]).find(".itemAmount").attr("id"));
+    }
+
+    $.ajax({
+        url: '/confirmOrder',
+        type: 'POST',
+        data: {products: products, amounts: amounts, units:units},
+        success: emptyCart
+    });
+}
+
+function emptyCart(){
+    $("#checkoutPage .itemBlock .X").trigger(window.util.eventstr);
 }

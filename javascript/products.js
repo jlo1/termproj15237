@@ -150,7 +150,7 @@ function addToCart(event){
         type: 'POST',
         data: {product: id, amount: amount, unit: unit},
         success:function(){
-            alert("Successfully added " +amount+ " " +targ.find(".itemDetails h1").html()+ " to your cart");
+            alert("Successfully added " +amount+ " " +unit +" of "+targ.find(".itemDetails h1").html()+ " to your cart");
             targ.find(".amountNumber").val("0");
         },
         error: function(){console.log("need to login");}
