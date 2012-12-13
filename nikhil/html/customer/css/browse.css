@@ -1,0 +1,134 @@
+
+.page#checkoutPage {
+    margin: 5px;
+}
+
+#checkoutPage ul {
+    position: relative;
+    width: 80px;
+    height: 100%;
+    float:left;
+    
+}
+
+#checkoutPage li {
+    
+}
+
+#checkoutPage li a {
+    border: solid 1px #AAAAAA;
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    width: 100%;
+	display: inline-block;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	padding: 20px 5px 20px 5px;
+	text-shadow: 0 1px 1px rgba(0,0,0,.3);
+    
+	-webkit-border-radius: 10px 0px 0px 10px ;
+	-moz-border-radius: 10px 0px 0px 10px ;
+	border-radius: 10px 0px 0px 10px ;
+}
+
+#checkoutPage li a.activeTab{
+    background-color: #CCCCCC;
+    border-right: none;
+}
+
+#checkoutPage .rightPage {
+    position: relative;
+    
+    overflow: auto;
+    padding: 10px;
+    display: none;
+    background-color: #CCCCCC;
+    min-height: 250px;
+}
+#checkoutPage .rightPage.activePage{
+    display: block;
+}
+
+#checkoutPage .pageContainer {
+    background-color: #FEFEFE;
+    position: relative;
+    padding: 10px;
+    min-height: 100px;
+    padding-bottom: 50px;
+}
+
+#checkoutPage #productList {
+    margin-bottom: 10px;
+    padding: 20px;
+}
+
+#checkoutPage .continueBtn {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    width: 100px;
+    text-align: center;
+    font-size: 15px;
+    padding: 10px;
+    
+    text-decoration: none;
+    border-color: gray;
+    border-style: solid;
+    border-width: 1px;
+    
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+
+#checkoutPage .itemBlock {
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    
+    
+    height: 90px;
+    overflow: hidden;       /*Hides overflowing content in itemBlock*/
+    
+    padding: 4px;
+	border: solid 1px #CCCCCC;
+}
+
+#checkoutPage .itemBlock:hover {
+    background-color: #EEEEEE;
+}
+#checkoutPage .itemBlock:active {
+    position: relative;
+    top: 1px;
+    left: 1px;
+}
+
+#checkoutPage .itemBlock .itemImg {
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    
+    margin-right: 4px;
+    float: left;
+    border: 1px solid #CCCCCC;
+    height: 80px;
+    width: 80px;
+}
+#checkoutPage .itemBlock .itemDetails {
+    max-height: 35px;
+    overflow: hidden;
+    
+}
+#checkoutPage .itemBlock h1 {
+    font-size: 18px;
+    font-weight: bold;
+}
+#checkoutPage .itemBlock p {
+}
+#checkoutPage .itemBlock .farmDist {
+    font-size: 10px;
+    font-style: italic;
+    padding: 10px;
+}
