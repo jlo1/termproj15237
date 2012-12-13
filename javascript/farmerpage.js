@@ -156,14 +156,14 @@ function submitProducts(){
     var name = $("#name").val();
     var category = $("#category").val().split(" ");
     var description = $("#description").val();
-    var pricelist = [];
+    var pricelist = {units: [], costs: []};
     for(var i = 0; i < $("#pricesdiv").children("div").length; i++){
         var p = Number($("#p"+(i+1)).val());
         var u = $("#u"+(i+1)).val();
-        pricelist[i] = {};
-        pricelist[i][u] = p;
-    
+        pricelist.units.push(u);
+        pricelist.costs.push(p);
     }
+
     console.log(pricelist);
     $.ajax({
         url: '/addProduct',

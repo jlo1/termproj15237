@@ -55,8 +55,6 @@ function search(e){
         type: 'POST',
         success: gotProducts
     });
-
-    
 }
 
 function gotProducts(data){

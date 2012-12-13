@@ -235,10 +235,8 @@ function addProduct(req, res){
     p.name = req.body.name;
     p.category = req.body.category;
     p.description = req.body.description;
-        
-    for(key in req.body.price){
-        p.price[key] = req.body.price[key];
-    }
+    p.price = req.body.price;
+
     console.log("req.body: ", req.body);
     Farmer.findById(req.user.id, function(err, farmer){
         p.farm = farmer.farm;
