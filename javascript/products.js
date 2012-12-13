@@ -63,33 +63,36 @@ function search(e){
 }
 
 function gotProducts(data){
-    if(data.length === 0){
+    if(data.nameResults.length === 0){
         console.log("empty");
     }
+    var container, itemBlock, itemImg, itemDetails, h1, p, farmDist, rating, itemAmount, input, select, options, j;
     
     console.log(data);
-    var container = $("#productContent");
-    var itemBlock = $(document.createElement("div")).addClass("itemBlock");
-    var itemImg = $(document.createElement("img")).addClass("itemImg");
-    var itemDetails = $(document.createElement("div")).addClass("itemDetails");
-    var h1 = $(document.createElement("h1"));
-    var p = $(document.createElement("p")).html(data.farmData[0].name);
-    var farmDist = $(document.createElement("span"));
-    var rating = $(document.createElement("div")).addClass("rating");
-    var itemAmount = $(document.createElement("div")).addClass("itemAmount");
-    var input = $(document.createElement("input")).attr("type", "number").attr("value", "0").attr("min", "0").addClass("amountNumber"); 
-    var select = $(document.createElement("select")).addClass("amountUnit");
-    var options = [];
-    for(var i = 0; i < 6; i++){
-        options[i] = $(document.createElement("option")).attr("value", "val"+i);
-        select.append(options[i]);
+    for(var i = 0; i < data.nameResults.length; i++){
+        container = $("#productContent");
+        itemBlock = $(document.createElement("div")).addClass("itemBlock");
+        itemImg = $(document.createElement("img")).addClass("itemImg");
+        itemDetails = $(document.createElement("div")).addClass("itemDetails");
+        h1 = $(document.createElement("h1"));
+        p = $(document.createElement("p")).html(data.farmData[i].name);
+        farmDist = $(document.createElement("span"));
+        rating = $(document.createElement("div")).addClass("rating");
+        itemAmount = $(document.createElement("div")).addClass("itemAmount");
+        input = $(document.createElement("input")).attr("type", "number").attr("value", "0").attr("min", "0").addClass("amountNumber"); 
+        select = $(document.createElement("select")).addClass("amountUnit");
+        options = [];
+        for(var j = 0; j < 6; j++){
+            options[j] = $(document.createElement("option")).attr("value", "val"+j);
+            select.append(options[j]);
+        }
+        p.append(farmDist);
+        h1.html(data.nameResults[i].name);
+        itemDetails.append(h1).append(p);
+        itemAmount.append(input).append(select);
+        itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount);
+        container.append(itemBlock);
     }
-    p.append(farmDist);
-    h1.html(data.nameResults[0].name);
-    itemDetails.append(h1).append(p);
-    itemAmount.append(input).append(select);
-    itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount);
-    container.append(itemBlock);
 }
 
 
