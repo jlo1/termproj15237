@@ -80,7 +80,7 @@ fs.writeFile(__dirname+"/orders.txt", "Product ID\t\t\tAmount\tUnit\tCustomer ID
 function farmGet(req, res){
     console.log("farmget", req.user);
     if(req.user!= undefined){
-        Farmer.findById(req.user.id, function(err, farmer){
+        Farmer.findById(req.user.id, functtion(err, farmer){
             if(farmer){
                 console.log("farmer cookie: " + req.user.id);
                 res.cookie("farmer", req.user.id);
