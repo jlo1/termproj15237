@@ -67,6 +67,7 @@ app.all('/getProducts', getProducts);
 app.all('/addProduct', addProduct);
 app.post('/checkoutPay', checkoutPay);
 app.all("/addToCart", addToCart);
+app.all("/getCart", getCart);
 
 
 /*
@@ -348,12 +349,63 @@ function addToCart(req, res){
         return;
     }
     Customer.findById(req.user.id, function(err, customer){
-        customer.amounts.push(req.body.amount);
-        customer.units.push(req.body.unit);
-        customer.products.push(req.body.product);
+        if(!customer){
+            res.status(401);
+            res.end();
+            return;
+        }
+        var index = customer.products.indexOf(req.body.product);
+        if(index === -1){
+            customer.amounts.push(parseInt(req.body.amount));
+            customer.units.push(req.body.unit);
+            customer.products.push(req.body.product);
+        }
+        else{
+            customer.amounts[index] = req.body.amount;
+            customer.units[index] = req.body.unit;
+        }
+        customer.markModified('amounts');
+        customer.markModified('units');
+        customer.save();
         res.status(200);
         res.end();
-        });
+    });
+}
+
+function getCart(req, res){
+    if(req.user === undefined){
+        res.status(401);
+        res.end();
+        return;
+    }
+
+    Customer.findById(req.user.id, function(err, customer){
+        if(!customer){
+            res.status(401);
+            res.end();
+            return;
+        }
+        if(customer.products.length === 0){
+            res.status(200);
+            res.end();
+            return;
+        }
+        var send = {};
+        send.amounts = customer.amounts;
+        send.units = customer.units;
+        send.products = []; 
+        var count = 0;
+        for(var i = 0; i < customer.products.length; i++){
+            Product.findById(customer.products[i], function(err, product){
+                count++;
+                send.products[this] = product;
+                if(count === customer.products.length){
+                    res.status(200);
+                    res.send(send);
+                }
+            }.bind(i));
+        }
+        
     });
 }
 /*

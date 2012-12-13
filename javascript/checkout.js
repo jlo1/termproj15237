@@ -13,6 +13,7 @@ var CheckoutPage = function(){;
 }
 
 CheckoutPage.prototype.reload = function() {
+    addCart();
     if(window.util.hasCookies("customer")) {
         $("#cartContinueBtn").text("Checkout");
         this.isRegistered = true;
@@ -25,10 +26,6 @@ CheckoutPage.prototype.reload = function() {
 
     //Reload cart and checkout info. Called if signout/signin etc.
 
-    //TODO: reload the cart and update!!
-    this.updateCart();
-
-
     //reset buttons and input values
     $('#checkoutPage .invalidNote').addClass('hidden');
     $("#confirmContinueBtn").html('Confirm');
@@ -36,27 +33,6 @@ CheckoutPage.prototype.reload = function() {
     $("#checkoutPage #payment input").val("");   //clear all the filled in values
 }
 
-CheckoutPage.prototype.updateCart = function() {
-
-
-
-    this.updateAmountInCents();
-}
-
-CheckoutPage.prototype.addItemToCart = function(itemID) {
-    //add item to html of productList in cart
-    
-    this.itemIDs.push(itemID);
-    this.itemCount += 1;
-}
-
-CheckoutPage.prototype.removeItemFromCart = function(itemID) {
-    //if (itemID not found) return;
-    //remove item from html of productList in cart
-    
-    this.itemIDs.splice(this.itemIDs.indexOf(itemID), 1);
-    this.itemCount -= 1;
-}
 
 CheckoutPage.prototype.paymentComplete = function () {
     //empty cart
@@ -72,6 +48,7 @@ CheckoutPage.prototype.updateAmountInCents = function() {
 }
 
 CheckoutPage.prototype.load = function() {
+    addCart()
     var thisPage = this;
     if(window.util.hasCookies("customer")) {
         $("#cartContinueBtn").text("Checkout");
@@ -196,4 +173,48 @@ function postToChargeCard() {
     );
 
 
+}
+
+
+function addCart(){
+    console.log("adding to caert");
+    $.ajax({
+        url: '/getCart',
+        type: 'POST',
+        success: addCartSuccess,
+        error: function(){console.log("error adding cart");}
+    });
+}
+
+function addCartSuccess(data){
+    console.log("adding cart succcesss");
+    $("#productList").html("");
+    if(data.products === undefined){
+        console.log("empty cart");
+        return;
+    }
+    if(data.products.length === 0){
+        console.log("empty");
+    }
+    var container, itemBlock, itemImg, itemDetails, h1, p, farmDist, rating, itemAmount, input, select, options, j, itemId;
+    $("#itemCount").html(data.products.length);
+    console.log(data);
+    var totalCost = 0;
+    for(var i = 0; i < data.products.length; i++){
+        container = $("#productList");
+        itemBlock = $(document.createElement("div")).addClass("itemBlock");
+        itemImg = $(document.createElement("img")).addClass("itemImg");
+        itemDetails = $(document.createElement("div")).addClass("itemDetails");
+        h1 = $(document.createElement("h1"));
+        farmDist = $(document.createElement("span"));
+        itemAmount = $(document.createElement("div")).addClass("itemAmount");
+        h1.html(data.products[i].name);
+        itemDetails.append(h1);
+        itemBlock.append(itemImg).append(itemDetails).append(itemAmount);
+        container.append(itemBlock);
+
+        totalCost += data.products[i].prices[data.products[i].units.indexOf(data.units[i])] * data.amounts[i];
+    }
+    $("#cartPrice").html(totalCost.toFixed(2));
+    
 }

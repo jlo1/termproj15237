@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var productsdb = mongoose.createConnection('mongodb://128.237.122.19/products');
+var productsdb = mongoose.createConnection('mongodb://localhost/products');
 var Product = new Schema({
     name: String,
     description: String,
