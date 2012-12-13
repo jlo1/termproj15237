@@ -105,9 +105,11 @@ function gotProducts(data){
         h1.html(data.nameResults[i].name);
         itemDetails.append(h1).append(p);
         itemAmount.append(input).append(select);
+
         itemId.attr("id", data.nameResults[i].id);
         finalizeBlock.append(priceBlock).append(addBtn);
         itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount).append(finalizeBlock);
+
         container.append(itemBlock);
 
         /*Make price appear on change of input if applicable*/
@@ -132,8 +134,7 @@ function updatePrice(data) {
 
 function addToCart(event){
     var targ = $(event.target);
-    var amount = parseInt(targ.find(".amountNumber").val()) +1;
-    targ.find(".amountNumber").val(amount);
+    var amount = parseInt(targ.find(".amountNumber").val());
     var options = targ.find(".amountUnit").children();
     var id = targ.find(".itemId").attr("id");
     var unit;
@@ -143,7 +144,13 @@ function addToCart(event){
             break;
         }
     }
-    console.log("added to cart");
+    $.ajax({
+        url: '/addToCart',
+        type: 'POST',
+        data: {product: id, amount: amount, unit: unit},
+        success:function(){console.log("addedToCart");},
+        error: function(){console.log("need to login");}
+    });
      
 }
 
