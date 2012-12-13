@@ -6,8 +6,8 @@ var Farm = new Schema({
     name: String,
     city: String,
     state: String,
-    lat: String,
-    lng: String,
+    lat: Number,
+    lng: Number,
     certifications: [String],
     farmer: {type: Schema.ObjectId, ref: 'Farmer'}
 

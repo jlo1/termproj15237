@@ -1,0 +1,95 @@
+13a14
+>   , stripe = require('stripe')("sk_test_QkRJtqt6wauRuJ1naiKqWo3s")
+19c20
+<   
+---
+> 
+35c36
+<   app.use("/public", express.static(path.join(__dirname, 'public'))); //delete this.
+---
+>   app.use("/public", express.static(path.join(__dirname, 'public')));
+44c45
+<   app.use(passport.initialize());
+---
+>   app.use(passport.initialize()); //does not work, i don't know why
+49d49
+< 
+51a52
+> 
+57,58c58,59
+< app.get('/', routes.index); //route to customer get?
+< app.get("/html/:staticFilename", serveStaticFile); //delete this
+---
+> app.get('/', routes.index);
+> app.get("/html/:staticFilename", serveStaticFile);
+60c61
+< function serveStaticFile(request, response) {       //delete this
+---
+> function serveStaticFile(request, response) {
+74c75
+< app.get('/product', products.products); //delete this
+---
+> app.get('/product', products.products);
+78c79,80
+< app.post('/loginFarm', passport.authenticate('local'), farmerLogin);
+---
+> app.post('/loginFarm', passport.authenticate('local', {successRedirect: "html/farmerpage.html",
+>                                                         failureRedirect: "html/farmerpage.html"}))
+82a85
+> app.post('/checkoutPay', checkoutPay);
+90,93d92
+< /*
+<  * Routing handlers.
+<  */
+< 
+109d107
+<     console.log("logigng in ");
+111c109
+<     Farm.findOne({farmer: req.user.id}, function(err, farm){ //delete this
+---
+>     Farm.findOne({farmer: req.user.id}, function(err, farm){
+185a184,209
+> function checkoutPay(req, res){
+>     res.status(200);
+>     var charge = stripe.charges.create({
+>         amount : 2000,
+>         currency : "usd",
+>         card : req.body.stripeToken,
+>         description : req.body.stripeUser
+>         }, function(payErr, charge) {
+>             if(payErr) {
+>                 console.log("In error of checkoutPay (app.js)");
+>                 console.log("Card Token: " + req.body.stripeToken);
+>                 console.log("Amount: " + req.body.stripePrice);
+>                 console.log("Description: " + req.body.stripeUser);
+>                 var msg = charge.failure_response || "unknown";
+>                 res.send("Error processing payment: " + msg );
+>             }
+> 
+>             else {
+>                 console.log('Success! Fake charged a card for $$$$!');
+>                 // save this customer to your database here!
+>                 res.send('ok');
+>             }
+>         }
+>     );
+> }
+> 
+216c240
+<         /*                                                                          //delete this on jessica's only
+---
+>         /*
+282c306
+<     /*                          //delete this on jessica's only
+---
+>     /*
+291,293c315
+< /*
+<  * Initialize passport settings for our authentication policy
+<  */
+---
+> //passport
+355,357d376
+< 
+< 
+< 

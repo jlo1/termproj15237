@@ -286,17 +286,21 @@ function getProducts(request, response){
         });
 
         //TODO: you got to move this to the inner callback
-            console.log("named results =--=--=");
-            console.log(nameResults[0]);
-            console.log(nameResults);
-            Farm.findById(nameResults[0].farm, function(err, farm){
-                var nameResults = this;
+        var farmData = [];
+        for(var i = 0; i < nameResults.length; i++){
+            Farm.findById(nameResults[i].farm, function(err, farm){
+                var nameResults = this.nameResults;
+                var i = this.i;
                 console.log("this: "+this);
                 if(!farm)
                     console.log("NO FARM FOUND! SHOULD NOT HAPPEN");
+                farmData[i] = farm;
+                if(i==nameResults.length-1){
                     response.status(200); 
-                    response.send({nameResults: nameResults, farm: farm});
-            }.bind(nameResults));
+                    response.send({nameResults: nameResults, farmData: farmData});
+                }
+            }.bind({nameResults:nameResults, i:i}));
+        }
     });
 }
 

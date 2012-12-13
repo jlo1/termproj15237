@@ -70,7 +70,7 @@ function gotProducts(data){
     var itemImg = $(document.createElement("img")).addClass("itemImg");
     var itemDetails = $(document.createElement("div")).addClass("itemDetails");
     var h1 = $(document.createElement("h1"));
-    var p = $(document.createElement("p")).html(data.farm.name);
+    var p = $(document.createElement("p")).html(data.farmData[0].name);
     var farmDist = $(document.createElement("span"));
     var rating = $(document.createElement("div")).addClass("rating");
     var itemAmount = $(document.createElement("div")).addClass("itemAmount");
