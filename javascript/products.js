@@ -137,6 +137,7 @@ function addToCart(event){
     var amount = parseInt(targ.find(".amountNumber").val());
     var options = targ.find(".amountUnit").children();
     var id = targ.find(".itemId").attr("id");
+    
     var unit;
     for(var i = 0; i < options.length; i++){
         if(options[i].selected === true){
@@ -148,7 +149,10 @@ function addToCart(event){
         url: '/addToCart',
         type: 'POST',
         data: {product: id, amount: amount, unit: unit},
-        success:function(){console.log("addedToCart");},
+        success:function(){
+            alert("Successfully added " +amount+ " " +targ.find(".itemDetails h1").html()+ " to your cart");
+            targ.find(".amountNumber").val("0");
+        },
         error: function(){console.log("need to login");}
     });
      

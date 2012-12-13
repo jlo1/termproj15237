@@ -186,6 +186,18 @@ function addCart(){
     });
 }
 
+function removeFromCart(e){
+    var id = $(e.target).closest(".itemBlock").find(".itemId").attr("id"); 
+    console.log("remove from cart");
+    $.ajax({
+        url: '/removeFromCart',
+        type: 'POST',
+        data: {id:id},
+        success: addCart,
+        error: function(){console.log("error removing from cart");}
+    });
+}
+
 function addCartSuccess(data){
     console.log("adding cart succcesss");
     $("#productList").html("");
@@ -196,25 +208,32 @@ function addCartSuccess(data){
     if(data.products.length === 0){
         console.log("empty");
     }
-    var container, itemBlock, itemImg, itemDetails, h1, p, farmDist, rating, itemAmount, input, select, options, j, itemId;
+    var container, itemBlock, itemDetails, h1, h2, itemAmount, x, itemId;
     $("#itemCount").html(data.products.length);
     console.log(data);
     var totalCost = 0;
     for(var i = 0; i < data.products.length; i++){
         container = $("#productList");
         itemBlock = $(document.createElement("div")).addClass("itemBlock");
-        itemImg = $(document.createElement("img")).addClass("itemImg");
         itemDetails = $(document.createElement("div")).addClass("itemDetails");
         h1 = $(document.createElement("h1"));
+        h2 = $(document.createElement("h2"));
         farmDist = $(document.createElement("span"));
         itemAmount = $(document.createElement("div")).addClass("itemAmount");
+        x = $(document.createElement("span")).addClass("X");
+        itemId = $(document.createElement("div")).addClass("itemId");
         h1.html(data.products[i].name);
-        itemDetails.append(h1);
-        itemBlock.append(itemImg).append(itemDetails).append(itemAmount);
+        h2.html(data.amounts[i]+" "+data.units[i]+", at $"+data.products[i].prices[data.products[i].units.indexOf(data.units[i])].toFixed(2)+" each");
+        x.html("X"); 
+        itemId.attr("id", data.products[i]._id);
+        itemDetails.append(h1).append(x).append(h2);
+        itemBlock.append(itemDetails).append(itemAmount).append(itemId);
         container.append(itemBlock);
 
         totalCost += data.products[i].prices[data.products[i].units.indexOf(data.units[i])] * data.amounts[i];
     }
     $("#cartPrice").html(totalCost.toFixed(2));
+
+    $("#checkoutPage .itemDetails .X").on(window.util.eventstr, removeFromCart);
     
 }

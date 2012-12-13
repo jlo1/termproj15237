@@ -79,7 +79,7 @@
     -webkit-box-sizing:border-box;
     
     
-    height: 90px;
+    height: 30px;
     overflow: hidden;       /*Hides overflowing content in itemBlock*/
     
     padding: 4px;
@@ -88,11 +88,6 @@
 
 #checkoutPage .itemBlock:hover {
     background-color: #EEEEEE;
-}
-#checkoutPage .itemBlock:active {
-    position: relative;
-    top: 1px;
-    left: 1px;
 }
 
 #checkoutPage .itemBlock .itemImg {
@@ -103,17 +98,71 @@
     margin-right: 4px;
     float: left;
     border: 1px solid #CCCCCC;
-    height: 80px;
-    width: 80px;
+    /*height: 80px;
+    width: 80px;*/
+    display: none;
 }
 #checkoutPage .itemBlock .itemDetails {
-    max-height: 35px;
-    overflow: hidden;
+    height: 100%;
+    position: relative;
     
 }
 #checkoutPage .itemBlock h1 {
     font-size: 18px;
+    display: inline;
+}
+
+#checkoutPage .itemBlock h2 {
+    display: inline;
+    font-style: italic;
+    position: relative;
+    float:right;
+    margin-right: 3px;
+}
+
+#checkoutPage .itemDetails span{
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+    
+    width: 50px;
+    text-align: center;
+    font-size: 18px;
     font-weight: bold;
+    
+    text-decoration: none;
+    border-color: green;
+    border-style: solid;
+    border-width: 1px;
+    color:  black;
+    
+
+    background: #a9db80; /* Old browsers */
+    background: -moz-linear-gradient(top, #a9db80 1%, #58844b 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#a9db80), color-stop(100%,#58844b)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #a9db80 1%,#58844b 100%); /* Chrome10+,Safari5.1+ */
+   
+    cursor: pointer;
+    position: relative; 
+    float: right;
+    height:100%;
+    font-weight: bold;
+    border: solid 1px;
+}
+
+#checkoutPage .itemDetails span:hover{
+    cursor: pointer;
+    color: red; 
+}
+
+#checkoutPage .itemDetails span:active {
+    position: absolute;
+    top: 1px;
+    right: -1px;
 }
 #checkoutPage .itemBlock p {
 }

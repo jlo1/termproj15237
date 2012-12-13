@@ -68,6 +68,7 @@ app.all('/addProduct', addProduct);
 app.post('/checkoutPay', checkoutPay);
 app.all("/addToCart", addToCart);
 app.all("/getCart", getCart);
+app.all("/removeFromCart", removeFromCart);
 
 
 /*
@@ -407,6 +408,34 @@ function getCart(req, res){
         }
         
     });
+}
+
+function removeFromCart(req, res){
+    if(req.user === undefined){
+        res.status(401);
+        res.end();
+        return;
+    }
+
+    Customer.findById(req.user.id, function(err, customer){
+        if(!customer){
+            res.status(401);
+            res.end();
+            return;
+        }
+
+        var index = customer.products.indexOf(req.body.id);
+        customer.products.splice(index, 1);
+        customer.amounts.splice(index, 1);
+        customer.units.splice(index, 1);
+        customer.markModified('amounts');
+        customer.markModified('units');
+        customer.markModified('products');
+        customer.save();
+        res.status(200);
+        res.end();
+    });
+    
 }
 /*
  * Initialize passport settings for our authentication policy
