@@ -66,6 +66,7 @@ app.all('/hasFarm', hasFarm);
 app.all('/getProducts', getProducts);
 app.all('/addProduct', addProduct);
 app.post('/checkoutPay', checkoutPay);
+app.all("/addToCart", addToCart);
 
 
 /*
@@ -340,6 +341,21 @@ function addFarm(req, res){
     */
 }
 
+function addToCart(req, res){
+    if(req.user === undefined){
+        res.status(401);
+        res.end();
+        return;
+    }
+    Customer.findById(req.user.id, function(err, customer){
+        customer.amounts.push(req.body.amount);
+        customer.units.push(req.body.unit);
+        customer.products.push(req.body.product);
+        res.status(200);
+        res.end();
+        });
+    });
+}
 /*
  * Initialize passport settings for our authentication policy
  */
