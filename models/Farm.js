@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var farmsdb = mongoose.createConnection('mongodb://localhost/farms');
+var farmsdb = mongoose.createConnection('mongodb://128.237.122.19/farms');
 var Farm = new Schema({
     name: String,
     city: String,

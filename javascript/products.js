@@ -14,7 +14,7 @@ ProductsPage.prototype.load = function() {
             search(e);
         }
     });
-    
+
     $(".sortOption").on(window.util.eventstr, function(e) {
         $(".sortOption.selected").removeClass("selected");
         $(e.target).closest(".sortOption").addClass("selected");
@@ -44,7 +44,6 @@ ProductsPage.prototype.load = function() {
         }
     
     });
-    
     /* .itemBlock.itemDetails on 'click':
      * Go to productpage
      * .itemBlock.rating on 'click':
@@ -71,7 +70,9 @@ function gotProducts(data){
     if(data.nameResults.length === 0){
         console.log("empty");
     }
-    var container, itemBlock, itemImg, itemDetails, h1, p, farmDist, rating, itemAmount, input, select, options, j, itemId;
+    var container, itemBlock, itemImg, itemDetails, h1, p, farmDist,
+        rating, itemAmount, input, select, options, j, itemId;
+    var priceVal, priceBlock, addBtn, finalizeBlock;
     
     console.log(data);
     for(var i = 0; i < data.nameResults.length; i++){
@@ -91,18 +92,42 @@ function gotProducts(data){
         options[0] = $(document.createElement("option")).attr("value", "none").html("--select--");
         select.append(options[0]);
         for(var j = 0; j < data.nameResults.length; j++){
-            options[j] = $(document.createElement("option")).attr("value", data.nameResults[i].units[j]).html(data.nameResults[i].units[j]);
+            options[j] = $(document.createElement("option")).attr("value",
+                        data.nameResults[i].units[j]).html(data.nameResults[i].units[j]);
             select.append(options[j]);
         }
+        priceVal = $(document.createElement("span")).addClass("itemPrice");
+        priceBlock = $(document.createElement("div")).addClass("itemPriceLabel").html("Price: ").append(priceVal);
+        addBtn = $(document.createElement("div")).addClass("addBtn").html("Add");
+        finalizeBlock = $(document.createElement("div")).addClass("itemFinalize");
+
         p.append(farmDist);
         h1.html(data.nameResults[i].name);
         itemDetails.append(h1).append(p);
         itemAmount.append(input).append(select);
         itemId.attr("id", data.nameResults[i].id);
-        itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount);
+        finalizeBlock.append(priceBlock).append(addBtn);
+        itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount).append(finalizeBlock);
         container.append(itemBlock);
+
+        /*Make price appear on change of input if applicable*/
+        input.change(updatePrice.bind({amt: input, unit: select, i:i}, data));
+        select.change(updatePrice.bind({amt: input, unit: select, i:i}, data));
     }
-    $(".itemBlock").doubletap(addToCart);
+    /*Add to cart on click*/
+    $(".addBtn").on(window.util.eventstr, addToCart);
+}
+
+function updatePrice(data) {
+    if(this.amt.val() <= 0 || this.unit.val() === "none")
+        return;
+    
+    var priceObj = this.amt.closest(".itemAmount").next(".itemFinalize").find(".itemPrice");
+
+    var unitInd = data.nameResults[this.i].units.indexOf(this.unit.val());
+    var pricePerUnit = data.nameResults[this.i].prices[unitInd];
+    var totalPrice = (this.amt.val() * pricePerUnit).toFixed(2);
+    priceObj.text("$" + totalPrice);
 }
 
 function addToCart(event){
