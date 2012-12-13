@@ -53,6 +53,7 @@ ProductsPage.prototype.load = function() {
 }
 
 function search(e){
+    //$("#productsPage #productContent").html("");
     var term = $("#searchterm").val();
     $.ajax({
         url: '/getProducts',
@@ -63,10 +64,14 @@ function search(e){
 }
 
 function gotProducts(data){
+    if(data.nameResults === undefined){
+        console.log("no results");
+        return;
+    }
     if(data.nameResults.length === 0){
         console.log("empty");
     }
-    var container, itemBlock, itemImg, itemDetails, h1, p, farmDist, rating, itemAmount, input, select, options, j;
+    var container, itemBlock, itemImg, itemDetails, h1, p, farmDist, rating, itemAmount, input, select, options, j, itemId;
     
     console.log(data);
     for(var i = 0; i < data.nameResults.length; i++){
@@ -81,20 +86,41 @@ function gotProducts(data){
         itemAmount = $(document.createElement("div")).addClass("itemAmount");
         input = $(document.createElement("input")).attr("type", "number").attr("value", "0").attr("min", "0").addClass("amountNumber"); 
         select = $(document.createElement("select")).addClass("amountUnit");
+        itemId = $(document.createElement("div")).addClass("itemId");
         options = [];
-        for(var j = 0; j < 6; j++){
-            options[j] = $(document.createElement("option")).attr("value", "val"+j);
+        options[0] = $(document.createElement("option")).attr("value", "none").html("--select--");
+        select.append(options[0]);
+        for(var j = 0; j < data.nameResults.length; j++){
+            options[j] = $(document.createElement("option")).attr("value", data.nameResults[i].units[j]).html(data.nameResults[i].units[j]);
             select.append(options[j]);
         }
         p.append(farmDist);
         h1.html(data.nameResults[i].name);
         itemDetails.append(h1).append(p);
         itemAmount.append(input).append(select);
+        itemId.attr("id", data.nameResults[i].id);
         itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount);
         container.append(itemBlock);
     }
+    $(".itemBlock").doubletap(addToCart);
 }
 
+function addToCart(event){
+    var targ = $(event.target);
+    var amount = parseInt(targ.find(".amountNumber").val()) +1;
+    targ.find(".amountNumber").val(amount);
+    var options = targ.find(".amountUnit").children();
+    var id = targ.find(".itemId").attr("id");
+    var unit;
+    for(var i = 0; i < options.length; i++){
+        if(options[i].selected === true){
+            unit = options[i].value;
+            break;
+        }
+    }
+    console.log("added to cart");
+     
+}
 
 
 

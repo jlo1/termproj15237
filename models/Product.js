@@ -8,7 +8,8 @@ var Product = new Schema({
     rating: Number,
     category: [String],
     farm: {type: Schema.ObjectId, ref: 'Farm'},
-    price: {units: [String], costs: [Number]}
+    units: [String],
+    prices: [Number]
 });
 
 Product.methods.validPassword = function(pwd){

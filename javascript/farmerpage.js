@@ -156,19 +156,19 @@ function submitProducts(){
     var name = $("#name").val();
     var category = $("#category").val().split(" ");
     var description = $("#description").val();
-    var pricelist = {units: [], costs: []};
+    var units = [];
+    var prices = [];
     for(var i = 0; i < $("#pricesdiv").children("div").length; i++){
         var p = Number($("#p"+(i+1)).val());
         var u = $("#u"+(i+1)).val();
-        pricelist.units.push(u);
-        pricelist.costs.push(p);
+        units.push(u);
+        prices.push(p);
     }
 
-    console.log(pricelist);
     $.ajax({
         url: '/addProduct',
         type: 'POST',
-        data: {name: name, category:category, description: description, price:pricelist},
+        data: {name: name, category:category, description: description, prices:prices, units: units},
         success: function(){console.log("success");},
         error: function(){console.log("not logged in");}
     });
