@@ -106,3 +106,13 @@ body {
 #checkoutIcon {
     background-position: -30px -116px;
 }
+
+
+
+@media only screen and (min-height : 0px) and (max-height : 518px) {
+
+    #navFooter {
+        display: none;
+
+
+    }

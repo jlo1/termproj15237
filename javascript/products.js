@@ -9,6 +9,11 @@ var ProductsPage = function(){
 ProductsPage.prototype.load = function() {
     var btnSearchObj = $(document.getElementById("btnRight"));
     btnSearchObj.on(window.util.eventstr, search);
+    $("#searchterm").keyup(function(e) {
+        if (e.which === 13) {
+            search(e);
+        }
+    });
     
     $(".sortOption").on(window.util.eventstr, function(e) {
         $(".sortOption.selected").removeClass("selected");
