@@ -19,22 +19,15 @@ AccountPage.prototype.load = function(reload) {
         loginSuccess.bind(this)();
     }
 
-    /*Event handlers on loginPage*/
-    $("#loginBtn").on(window.util.eventstr, function() {
-        //Handle authentication jazz
-        var loginEmail = $("#loginPage #loginEmail").val();
-        var loginPw = $("#loginPage #loginPassword").val();
-        console.log("logging in :"+loginEmail+" "+loginPw);
-        $.ajax({
-            url: "/loginCustomer",
-            type: "POST",
-            data: {username: loginEmail, password: loginPw,
-                type: "customer"},
-            success: loginSuccess.bind(this),
-            error: loginFail.bind(this)
-        });
-
+    //Submit login on press of enter in password field
+    $("#loginPage #loginPassword").keyup(function(e) {
+        if (e.which === 13) {
+            handleLogin.bind(this)();
+        }
     }.bind(this));
+
+    /*Event handlers on loginPage*/
+    $("#loginBtn").on(window.util.eventstr, handleLogin.bind(this));
 
     $("#registerBtn").on(window.util.eventstr, function() {
         this.currentContent = $("#registerPage");
@@ -67,20 +60,17 @@ AccountPage.prototype.load = function(reload) {
         $(".invalidNote").addClass("hidden");
     }.bind(this));
     
-    /*Event handlers on registerPage*/
-    $("#registerSubmitBtn").on(window.util.eventstr, function() {
-        //Passwords don't match
-        var pw1 = $("#regPassword1");
-        var em =  $("#registerEmail");
-        
-        var verifyRegForm = verifyRegisterForm();
-        
-        if(verifyRegForm === false)
-            return;
 
-        //Create a new account!
-        registerAccount.bind(this)(em.val(), pw1.val());
+    /*Event handlers on registerPage*/
+
+    //Submit login on press of enter in password field
+    $("#registerPage #regPassword2").keyup(function(e) {
+        if (e.which === 13) {
+            handleRegister.bind(this)();
+        }
     }.bind(this));
+    $("#registerSubmitBtn").on(window.util.eventstr,
+                            handleRegister.bind(this));
     
     
     /*Event handlers in editAccountPage*/
@@ -117,6 +107,42 @@ AccountPage.prototype.load = function(reload) {
     
 }
 
+function handleLogin() {
+    //Handle authentication jazz
+    var loginEmail = $("#loginPage #loginEmail").val();
+    var loginPw = $("#loginPage #loginPassword").val();
+    console.log("logging in :"+loginEmail+" "+loginPw);
+    $.ajax({
+        url: "/loginCustomer",
+        type: "POST",
+        data: {username: loginEmail, password: loginPw,
+            type: "customer"},
+        success: loginSuccess.bind(this),
+        error: loginFail.bind(this)
+    });
+}
+function handleRegister() {
+    //Passwords don't match
+    var pw1 = $("#regPassword1");
+    var em =  $("#registerEmail");
+    
+    var verifyRegForm = verifyRegisterForm();
+    
+    if(verifyRegForm === false)
+        return;
+
+    //Create a new account!
+    console.log("registering...");
+    $.ajax.bind(this)({
+        url: "/registerCustomer",
+        type: "POST",
+        data: {username: em.val(), password: pw1.val(),
+            type: "customer"},
+        success: registerSuccess.bind(this),
+        error: registerFail.bind(this)
+    });
+}
+
 function startTabOver() {
     switchTab.bind(this)($("#"+this.navStrArr[this.currentTabInd]+"Link"),
                         $("#"+this.navStrArr[0]+"Link"));
@@ -151,17 +177,6 @@ function checkPwAllowed(pw) {
 }
 
 
-function registerAccount(email, pw) {
-    console.log("registering...");
-    $.ajax.bind(this)({
-        url: "/registerCustomer",
-        type: "POST",
-        data: {username: email, password: pw,
-            type: "customer"},
-        success: registerSuccess.bind(this),
-        error: registerFail.bind(this)
-    });
-}
 function changePassword(email, newPw) {
     alert("Going to change the password of this email's account!");
 }

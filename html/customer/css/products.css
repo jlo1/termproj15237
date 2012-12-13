@@ -147,6 +147,10 @@
 }
 
 /*Filter Content*/
+#productsPage #filterContent {
+    display: none;
+}
+
 #productsPage .filterHdr {
     background-color: lightgray;
     font-weight: bold;

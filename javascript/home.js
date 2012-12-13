@@ -18,6 +18,12 @@ HomePage.prototype.load = function() {
 	this.handleNoGeolocation();
     $("#zipcodeTxt").val(this.zipcodeTxt);
 
+    $("#zipcodeTxt").keyup(function(e) {
+        if (e.which === 13) {
+            this.loadZipcodeSearch.bind(this);
+        }
+    }.bind(this));
+
     $("#zipcodeBtn").on(window.util.eventstr, this.loadZipcodeSearch.bind(this));
 
 }

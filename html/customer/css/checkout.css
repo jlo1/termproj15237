@@ -64,6 +64,15 @@
     font-size: 12px;
 }
 
+#checkoutPage .w60 {
+    width: 60px;
+}
+
+#checkoutPage .w100 {
+    width: 100px;
+}
+
+
 #checkoutPage .itemBlock {
     box-sizing: border-box;
     -moz-box-sizing:border-box;
