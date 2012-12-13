@@ -2,11 +2,11 @@
 var HomePage = function(){
     this.div = $('#homePage');
     this.zipcodeTxt = "test";
-    this.latlng;
     this.load();
 }
 
 HomePage.prototype.load = function() {
+	this.geocoder = new google.maps.Geocoder();
     
     if(!navigator.geolocation) {
         navigator.geolocation = {};
@@ -29,8 +29,29 @@ HomePage.prototype.load = function() {
 }
 
 HomePage.prototype.loadZipcodeSearch = function () {
+	//Save into local storage
 	this.zipcodeTxt = $("#zipcodeTxt").val();
 	window.localStorage.localRootsZipcode = JSON.stringify(this.zipcodeTxt);
+
+	//go from zipcodeText to this.appDOM.lat and this.appDOM.lng
+	//update this.appDOM.latlng too
+	var lat = '';
+    var lng = '';
+    var address = this.zipcodeTxt;
+    this.geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+		lat = results[0].geometry.location.lat();
+		lng = results[0].geometry.location.lng();
+      	console.log("Setting lat " + lat + " and lng " + lng);
+        }
+    	else {
+			console.log("Geocode was not successful for the following reason: " + status);
+        	$("#zipcodeTxt").attr("placeholder", "Error. Try Again.").val("");
+    	}
+    });
+    this.appDOM.lat = lat;
+    this.appDOM.lng = lng;
+    this.appDOM.latlng = new google.maps.LatLng(lat, lng);
 }
 
 
@@ -58,13 +79,12 @@ HomePage.prototype.handleNoGeolocation = function() {
 
 HomePage.prototype.getZipcode = function(position) {
 	console.log("has geolocation, getting current location");
-	var lat = position.coords.latitude;
-	var lng = position.coords.longitude;
+	this.appDOM.lat = position.coords.latitude;
+	this.appDOM.lng = position.coords.longitude;
 
-	var geocoder = new google.maps.Geocoder();
-	this.latlng = new google.maps.LatLng(lat, lng);
+	this.appDOM.latlng = new google.maps.LatLng(this.appDOM.lat, this.appDOM.lng);
 
-	geocoder.geocode({'latLng':this.latlng}, function(results, status) {
+	this.geocoder.geocode({'latLng':this.appDOM.latlng}, function(results, status) {
 		if(status !== google.maps.GeocoderStatus.OK) {
 			this.handleNoGeolocation();
 			return;

@@ -100,17 +100,37 @@ function errorLogIn(){
     $("#incorrect").html("incorrect login!").css("color", "red");
 }
 function addFarm(){
+
     var name = $("#farm_name").val();
     var city = $("#city").val();
     var state = $("#state").val();
     var cert = $("#cert").val().split(" ");
 
-    $.ajax({
-        url: '/addFarm',
-        type: 'POST',
-        data: {name: name, city: city, state:state, cert:cert},
-        success: successAddFarm
+    var geocoder = new google.maps.Geocoder();
+    var lat = '';
+    var lng = '';
+    var address = city + ", " + state;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        lat = results[0].geometry.location.lat();
+        lng = results[0].geometry.location.lng();
+        console.log("Setting lat " + lat + " and lng " + lng);
+
+
+        //send request to server only if valid city/state provided
+        $.ajax({
+            url: '/addFarm',
+            type: 'POST',
+            data: {name:name, city:city, state:state, lat:lat, lng:lng, cert:cert},
+            success: successAddFarm
+        });
+        }
+        else {
+            console.log("Geocode was not successful for the following reason: " + status);
+            $("#city").val("Error. Try Again.");
+            $("#state").val("Error. Try Again.");        }
     });
+
 }
 
 function addprice(){

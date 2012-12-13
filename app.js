@@ -323,6 +323,8 @@ function addFarm(req, res){
             newFarm.name =  req.body.name;
             newFarm.city = req.body.city;
             newFarm.state = req.body.state;
+            newFarm.lat = req.body.lat;
+            newFarm.lng = req.body.lng;
             newFarm.certifications = req.body.cert;
             newFarm.farmer = farmer.id;
             newFarm.save();
