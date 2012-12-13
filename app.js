@@ -285,19 +285,19 @@ function getProducts(request, response){
 
         //TODO: you got to move this to the inner callback
         var farmData = [];
+        var counter = 0;
         for(var i = 0; i < nameResults.length; i++){
             Farm.findById(nameResults[i].farm, function(err, farm){
-                var nameResults = this.nameResults;
-                var i = this.i;
+                counter++;
                 console.log("this: "+this);
                 if(!farm)
                     console.log("NO FARM FOUND! SHOULD NOT HAPPEN");
-                farmData[i] = farm;
-                if(i==nameResults.length-1){
+                farmData[this] = farm;
+                if(counter == nameResults.length){
                     response.status(200); 
                     response.send({nameResults: nameResults, farmData: farmData});
                 }
-            }.bind({nameResults:nameResults, i:i}));
+            }.bind(i));
         }
     });
 }
