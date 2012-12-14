@@ -72,16 +72,19 @@ function gotProducts(data){
     if(data.results.length === 0){
         console.log("empty");
     }
-    var container, itemBlock, itemImg, itemDetails, h1, p, farmDist,
+    var container,  h1, p, farmDist,
         rating, itemAmount, input, select, options, j, itemId;
     var priceVal, priceBlock, addBtn, finalizeBlock;
+    var itemBlock = [];
+    var itemDetails = [];
+    var itemImg = [];
     
     console.log(data);
     for(var i = 0; i < data.results.length; i++){
         container = $("#productContent");
-        itemBlock = $(document.createElement("div")).addClass("itemBlock");
-        itemImg = $(document.createElement("img")).addClass("itemImg");
-        itemDetails = $(document.createElement("div")).addClass("itemDetails");
+        itemBlock.push($(document.createElement("div")).addClass("itemBlock"));
+        itemImg.push($(document.createElement("img")).addClass("itemImg"));
+        itemDetails.push($(document.createElement("div")).addClass("itemDetails"));
         h1 = $(document.createElement("h1"));
         p = $(document.createElement("p")).html(data.farmData[i].name);
         farmDist = $(document.createElement("span")).addClass("farmDist").html(data.farmDistance[i] + " km");
@@ -105,18 +108,18 @@ function gotProducts(data){
 
         p.append(farmDist);
         h1.html(data.results[i].name);
-        itemDetails.append(h1).append(p);
+        itemDetails[i].append(h1).append(p);
         itemAmount.append(input).append(select);
 
         itemId.attr("id", data.results[i]._id);
         finalizeBlock.append(priceBlock).append(addBtn);
-        itemBlock.append(itemDetails).append(rating).append(itemAmount).append(finalizeBlock).append(itemId);
+        itemBlock[i].append(itemDetails[i]).append(rating).append(itemAmount).append(finalizeBlock).append(itemId);
 
-        container.append(itemBlock);
-        itemImg[0].src = data.results[i].image;
-        itemImg[0].onload = function(){
-            itemBlock[0].insertBefore(itemImg[0], itemDetails[0]);
-        }
+        container.append(itemBlock[i]);
+        itemImg[i][0].src = data.results[i].image;
+        itemImg[i][0].onload = function(){
+            itemBlock[this][0].insertBefore(itemImg[this][0], itemDetails[this][0]);
+        }.bind(i);
         /*Make price appear on change of input if applicable*/
         input.change(updatePrice.bind({amt: input, unit: select, i:i}, data));
         select.change(updatePrice.bind({amt: input, unit: select, i:i}, data));

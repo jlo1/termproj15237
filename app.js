@@ -242,6 +242,7 @@ function addProduct(req, res){
     p.description = req.body.description;
     p.prices = req.body.prices;
     p.units = req.body.units;
+    p.image = req.body.imgsrc;
 
     console.log("req.body: ", req.body);
     Farmer.findById(req.user.id, function(err, farmer){
