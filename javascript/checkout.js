@@ -81,6 +81,14 @@ CheckoutPage.prototype.load = function() {
             //don't switch tab if error occurred
             return;
         }
+        else if ($(e.target).attr("id")==="deliveryContinueBtn"){
+            if(deliveryValidate()){
+                var nextTabName = this.navStrArr[this.currentTabInd + 1];
+                switchTab.bind(this)($("#checkoutPage .activeTab"),
+                    $("#" + nextTabName + "Link"));
+            }
+            return;
+        }
 
         else if($(e.target).attr('id') === "confirmContinueBtn") {
             /*Change button to text of confirmation of payment*/
@@ -101,7 +109,6 @@ CheckoutPage.prototype.load = function() {
                 alert("No items added to cart");
                 return;
             }
-            this.updateAmountInCents.bind(this)();
             /*TODO: Check user authentication/login/register...*/
         }
         
@@ -137,7 +144,7 @@ function stripeResponseHandler (status, response) {
     $("input[name='stripeToken']").remove();
     $("input[name='stripePrice']").remove();
     form.append("<input type='hidden' name='stripeToken' value='" + response.id + "'/>");
-    form.append("<input type='hidden' name='stripePrice' value='" + this.amount + "'/>");
+    form.append("<input type='hidden' name='stripePrice' value='" + parseFloat($("#cartPrice").html())*100 + "'/>");
     form.append("<input type='hidden' name='stripeUser' value='TODO: checkout.js:119'/>");
     console.log("About to post token to server");
 
@@ -174,6 +181,27 @@ function postToChargeCard() {
     );
 
 
+}
+
+function deliveryValidate(){
+    var name = $("#checkoutContent #name").val();
+    var addr1 = $("#checkoutContent #address1").val();
+    var addr2 = $("#checkoutContent #address2").val();
+    var email = $("#checkoutContent #email").val();
+    var phone = $("#checkoutContent #number").val();
+    var comments = $("#checkoutContent #comments").val();
+
+    if(name === "" || addr1 === "" || email === "" || phone === ""){
+        alert("You have not yet filled out the necessary information");
+        return false;
+    }
+
+    if(email.indexOf(".") < 0 || email.indexOf("@") < 0 || email.indexOf(".") < email.indexOf("@")){
+        alert("Enter a valid email address");
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -248,6 +276,12 @@ function addCartSuccess(data){
 }
 
 function confirmOrder(){
+    var name = $("#checkoutContent #deliveryForm #name").val();
+    var addr1 = $("#checkoutContent #deliveryForm #address1").val();
+    var addr2 = $("#checkoutContent #deliveryForm #address2").val();
+    var email = $("#checkoutContent #deliveryForm #email").val();
+    var phone = $("#checkoutContent #deliveryForm #number").val();
+    var comments = $("#checkoutContent #deliveryForm #comments").val();
     var products = [];
     var amounts = [];
     var units = [];
@@ -262,11 +296,17 @@ function confirmOrder(){
     $.ajax({
         url: '/confirmOrder',
         type: 'POST',
-        data: {products: products, amounts: amounts, units:units},
+        data: {products: products, amounts: amounts, units:units, name: name, addr1: addr1, addr2: addr2, email: email, phone: phone, comments: comments},
         success: emptyCart
     });
 }
 
 function emptyCart(){
+    $("#checkoutContent #name").val("");
+    $("#checkoutContent #address1").val("");
+    $("#checkoutContent #address2").val("");
+    $("#checkoutContent #email").val("");
+    $("#checkoutContent #number").val("");
+    $("#checkoutContent #comments").val("");
     $("#checkoutPage .itemBlock .X").trigger(window.util.eventstr);
 }

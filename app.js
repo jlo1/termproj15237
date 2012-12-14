@@ -71,7 +71,7 @@ app.all("/getCart", getCart);
 app.all("/removeFromCart", removeFromCart);
 app.all("/confirmOrder", confirmOrder);
 
-fs.writeFile(__dirname+"/orders.txt", "Product ID\t\t\tAmount\tUnit\tCustomer ID\n");
+fs.writeFile(__dirname+"/orders.txt", "Product ID\tAmount\tUnit\tCustomer ID\tCustomer Name\tAddress 1\tAddress2\tEmail\tPhone\tComments\n");
 
 
 /*
@@ -152,7 +152,7 @@ function customerLogin(req, res){
 function checkoutPay(req, res){
     res.status(200);
     var charge = stripe.charges.create({
-        amount : 2000,
+        amount : req.body.stripePrice,
         currency : "usd",
         card : req.body.stripeToken,
         description : req.body.stripeUser
@@ -167,7 +167,7 @@ function checkoutPay(req, res){
             }
 
             else {
-                console.log('Success! Fake charged a card for $$$$!');
+                console.log('Success! Fake charged a card for $$$$! : ' + req.body.stripePrice);
                 // save this customer to your database here!
                 res.send('ok');
             }
@@ -244,7 +244,6 @@ function addProduct(req, res){
     p.units = req.body.units;
     p.image = req.body.imgsrc;
 
-    console.log("req.body: ", req.body);
     Farmer.findById(req.user.id, function(err, farmer){
         p.farm = farmer.farm;
         p.save();
@@ -265,7 +264,6 @@ function getProducts(request, response){
     console.log("term: " + term);
 
     Product.find({name: term}, function(err, nameResults){
-        console.log("name results!\n:" + nameResults + "\n\n");
         /*
         Product.find({$where:"this.category.indexOf(term)!==-1"}, function(err, catResults){
             console.log(catResults);
@@ -489,7 +487,7 @@ function confirmOrder(req, res){
         }
         var strings = "";
         for(var i = 0; i < req.body.products.length; i++){
-            strings = strings+req.body.products[i]+"\t"+req.body.amounts[i]+"\t"+req.body.units[i]+"\t"+req.user.id+"\n";
+            strings = strings+req.body.products[i]+"\t"+req.body.amounts[i]+"\t"+req.body.units[i]+"\t"+req.user.id+"\t"+req.body.name+"\t"+req.body.addr1+"\t"+req.body.addr2+"\t"+req.body.email+"\t"+req.body.phone+"\t"+req.body.comments+"\n";
         }
         fs.appendFile(__dirname + "/orders.txt", strings, function(err){
             if(err){
