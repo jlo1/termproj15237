@@ -76,11 +76,10 @@ fs.writeFile(__dirname+"/orders.txt", "Product ID\t\t\tAmount\tUnit\tCustomer ID
 /*
  * Routing handlers.
  */
-
 function farmGet(req, res){
     console.log("farmget", req.user);
     if(req.user!= undefined){
-        Farmer.findById(req.user.id, functtion(err, farmer){
+        Farmer.findById(req.user.id, function(err, farmer){
             if(farmer){
                 console.log("farmer cookie: " + req.user.id);
                 res.cookie("farmer", req.user.id);
@@ -255,28 +254,36 @@ function addProduct(req, res){
 
 function getProducts(request, response){
     var term = request.body.term;
+    var th = request.body.th;   //threshold in km
+    var latNow = request.body.latNow;
+    var lngNow = request.body.lngNow;
+
+    if(term === "") term = new RegExp(".*");
+    else term = new RegExp(term, "i");
     console.log("term: " + term);
+
     Product.find({name: term}, function(err, nameResults){
-        console.log(nameResults);
+        console.log("name results!\n:" + nameResults + "\n\n");
+        /*
         Product.find({$where:"this.category.indexOf(term)!==-1"}, function(err, catResults){
             console.log(catResults);
             Farm.find({name : term}, function(err, farm){
                 console.log(farm);
-                var farmResults;
+                var farmResults = [];
                 farm.forEach(function(value){
                    farmResults = farmResults.concat(value.products); 
                 });
                 console.log("found farmname");
                 Farm.find({city : term}, function(err, city){
                     console.log(city);
-                    var cityResults;
+                    var cityResults = [];
                     city.forEach(function(value){
                        cityResults = cityResults.concat(value.products); 
                     });
                     console.log("found city");
                   Farm.find({state : term}, function(err, state){
                     console.log(state);
-                    var stateResults;
+                    var stateResults = [];
                     state.forEach(function(value){
                        stateResults = stateResults.concat(value.products); 
                     });
@@ -288,24 +295,47 @@ function getProducts(request, response){
                 });
             });
         });
-
-        //TODO: you got to move this to the inner callback
+        */
+        var results = nameResults;
         var farmData = [];
+        var farmDistance = [];
         var counter = 0;
-        for(var i = 0; i < nameResults.length; i++){
-            Farm.findById(nameResults[i].farm, function(err, farm){
+        var index = 0;
+        var narrowedResults = [];
+        for(var i = 0; i < results.length; i++){
+            Farm.findById(results[i].farm, function(err, farm){
                 counter++;
-                console.log("this: "+this);
                 if(!farm)
                     console.log("NO FARM FOUND! SHOULD NOT HAPPEN");
-                farmData[this] = farm;
-                if(counter == nameResults.length){
+
+                var kmDist = getKmDist(latNow, lngNow, farm.lat, farm.lng);
+                console.log("Distance to farm " + this + ": " + kmDist + "km");
+
+                if(kmDist < th) {
+                    farmData[index] = farm;
+                    farmDistance[index] = kmDist.toFixed(2);
+                    narrowedResults[index] = results[this];
+                    index++;
+                }
+
+                if(counter == results.length){
                     response.status(200); 
-                    response.send({nameResults: nameResults, farmData: farmData});
+                    response.send({results: narrowedResults, farmData: farmData,
+                                    farmDistance: farmDistance});
                 }
             }.bind(i));
         }
     });
+}
+
+function getKmDist(lat1deg, lng1deg, lat2deg, lng2deg) {
+    var lat1, lng1, lat2, lng2;
+    lat1 = lat1deg * Math.PI / 180;
+    lng1 = lng1deg * Math.PI / 180;
+    lat2 = lat2deg * Math.PI / 180;
+    lng2 = lng2deg * Math.PI / 180;
+    return Math.acos(Math.sin(lat1)*Math.sin(lat2) + 
+        Math.cos(lat1)*Math.cos(lat2)*Math.cos(lng2-lng1))*6371;
 }
 
 function addFarm(req, res){

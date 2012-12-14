@@ -2,18 +2,19 @@
 
 var ProductsPage = function(){
     this.div = $('#productsPage');
+    this.kmThreshold = 50;
     this.load();
     this.sortFilter = "recommended";
 }
 
 ProductsPage.prototype.load = function() {
     var btnSearchObj = $(document.getElementById("btnRight"));
-    btnSearchObj.on(window.util.eventstr, search);
+    btnSearchObj.on(window.util.eventstr, search.bind(this));
     $("#searchterm").keyup(function(e) {
         if (e.which === 13) {
-            search(e);
+            search.bind(this)(e);
         }
-    });
+    }.bind(this));
 
     $(".sortOption").on(window.util.eventstr, function(e) {
         $(".sortOption.selected").removeClass("selected");
@@ -56,18 +57,19 @@ function search(e){
     var term = $("#searchterm").val();
     $.ajax({
         url: '/getProducts',
-        data: {term: term},
+        data: {term: term, th: this.kmThreshold,
+            latNow:this.appDOM.lat, lngNow:this.appDOM.lng},
         type: 'POST',
         success: gotProducts
     });
 }
 
 function gotProducts(data){
-    if(data.nameResults === undefined){
+    if(data.results === undefined){
         console.log("no results");
         return;
     }
-    if(data.nameResults.length === 0){
+    if(data.results.length === 0){
         console.log("empty");
     }
     var container, itemBlock, itemImg, itemDetails, h1, p, farmDist,
@@ -75,14 +77,14 @@ function gotProducts(data){
     var priceVal, priceBlock, addBtn, finalizeBlock;
     
     console.log(data);
-    for(var i = 0; i < data.nameResults.length; i++){
+    for(var i = 0; i < data.results.length; i++){
         container = $("#productContent");
         itemBlock = $(document.createElement("div")).addClass("itemBlock");
         itemImg = $(document.createElement("img")).addClass("itemImg");
         itemDetails = $(document.createElement("div")).addClass("itemDetails");
         h1 = $(document.createElement("h1"));
         p = $(document.createElement("p")).html(data.farmData[i].name);
-        farmDist = $(document.createElement("span"));
+        farmDist = $(document.createElement("span")).addClass("farmDist").html(data.farmDistance[i] + " km");
         rating = $(document.createElement("div")).addClass("rating");
         itemAmount = $(document.createElement("div")).addClass("itemAmount");
         input = $(document.createElement("input")).attr("type", "number").attr("value", "0").attr("min", "0").addClass("amountNumber"); 
@@ -91,9 +93,9 @@ function gotProducts(data){
         options = [];
         options[0] = $(document.createElement("option")).attr("value", "none").html("--select--");
         select.append(options[0]);
-        for(var j = 0; j < data.nameResults[i].units.length; j++){
+        for(var j = 0; j < data.results[i].units.length; j++){
             options[j] = $(document.createElement("option")).attr("value",
-                        data.nameResults[i].units[j]).html(data.nameResults[i].units[j]);
+                        data.results[i].units[j]).html(data.results[i].units[j]);
             select.append(options[j]);
         }
         priceVal = $(document.createElement("span")).addClass("itemPrice");
@@ -102,11 +104,11 @@ function gotProducts(data){
         finalizeBlock = $(document.createElement("div")).addClass("itemFinalize");
 
         p.append(farmDist);
-        h1.html(data.nameResults[i].name);
+        h1.html(data.results[i].name);
         itemDetails.append(h1).append(p);
         itemAmount.append(input).append(select);
 
-        itemId.attr("id", data.nameResults[i]._id);
+        itemId.attr("id", data.results[i]._id);
         finalizeBlock.append(priceBlock).append(addBtn);
         itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount).append(finalizeBlock).append(itemId);
 
@@ -126,8 +128,8 @@ function updatePrice(data) {
     
     var priceObj = this.amt.closest(".itemAmount").next(".itemFinalize").find(".itemPrice");
 
-    var unitInd = data.nameResults[this.i].units.indexOf(this.unit.val());
-    var pricePerUnit = data.nameResults[this.i].prices[unitInd];
+    var unitInd = data.results[this.i].units.indexOf(this.unit.val());
+    var pricePerUnit = data.results[this.i].prices[unitInd];
     var totalPrice = (this.amt.val() * pricePerUnit).toFixed(2);
     priceObj.text("$" + totalPrice);
 }

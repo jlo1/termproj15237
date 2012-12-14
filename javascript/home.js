@@ -17,10 +17,13 @@ HomePage.prototype.load = function() {
     navigator.geolocation.getCurrentPosition(
     	this.getZipcode.bind(this), this.handleNoGeolocation.bind(this));
 
+    //Force user to enter a zipcode/location
+    $("#navFooter").css('display', 'none');
+
     //trigger search btn click on "enter" key
     $("#zipcodeTxt").keyup(function(e) {
         if (e.which === 13) {
-            this.loadZipcodeSearch.bind(this);
+            this.loadZipcodeSearch.bind(this)();
         }
     }.bind(this));
 
@@ -42,16 +45,26 @@ HomePage.prototype.loadZipcodeSearch = function () {
       if (status == google.maps.GeocoderStatus.OK) {
 		lat = results[0].geometry.location.lat();
 		lng = results[0].geometry.location.lng();
+
+        this.appDOM.lat = lat;
+        this.appDOM.lng = lng;
+        this.appDOM.latlng = new google.maps.LatLng(lat, lng);
+        $("#navFooter").css('display', 'block');
+
+        $("#HomePageBtn").closest(".iconBlock").removeClass("active");
+        $("#ProductsPageBtn").closest('.iconBlock').addClass("active");
+        this.appDOM.switchTo.bind(this.appDOM)(this.appDOM.pages[2]);
+        $("#productsPage #btnRight").trigger(window.util.eventstr);
+
+        $("#navFooter").css('display', 'block');
+
       	console.log("Setting lat " + lat + " and lng " + lng);
         }
     	else {
 			console.log("Geocode was not successful for the following reason: " + status);
         	$("#zipcodeTxt").attr("placeholder", "Error. Try Again.").val("");
     	}
-    });
-    this.appDOM.lat = lat;
-    this.appDOM.lng = lng;
-    this.appDOM.latlng = new google.maps.LatLng(lat, lng);
+    }.bind(this));
 }
 
 
@@ -79,12 +92,12 @@ HomePage.prototype.handleNoGeolocation = function() {
 
 HomePage.prototype.getZipcode = function(position) {
 	console.log("has geolocation, getting current location");
-	this.appDOM.lat = position.coords.latitude;
-	this.appDOM.lng = position.coords.longitude;
+	var lat = position.coords.latitude;
+	var lng = position.coords.longitude;
 
-	this.appDOM.latlng = new google.maps.LatLng(this.appDOM.lat, this.appDOM.lng);
+	var latlng = new google.maps.LatLng(lat, lng);
 
-	this.geocoder.geocode({'latLng':this.appDOM.latlng}, function(results, status) {
+	this.geocoder.geocode({'latLng':latlng}, function(results, status) {
 		if(status !== google.maps.GeocoderStatus.OK) {
 			this.handleNoGeolocation();
 			return;
