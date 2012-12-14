@@ -108,10 +108,13 @@ function gotProducts(data){
 
         itemId.attr("id", data.nameResults[i]._id);
         finalizeBlock.append(priceBlock).append(addBtn);
-        itemBlock.append(itemImg).append(itemDetails).append(rating).append(itemAmount).append(finalizeBlock).append(itemId);
+        itemBlock.append(itemDetails).append(rating).append(itemAmount).append(finalizeBlock).append(itemId);
 
         container.append(itemBlock);
-
+        itemImg[0].src = data.nameResults[i].image;
+        itemImg[0].onload = function(){
+            itemBlock[0].insertBefore(itemImg[0], itemDetails[0]);
+        }
         /*Make price appear on change of input if applicable*/
         input.change(updatePrice.bind({amt: input, unit: select, i:i}, data));
         select.change(updatePrice.bind({amt: input, unit: select, i:i}, data));
@@ -144,6 +147,10 @@ function addToCart(event){
             unit = options[i].value;
             break;
         }
+    }
+    if(amount === 0 || unit === "none"){
+        alert("error, make sure you select a unit and an amount");
+        return;
     }
     $.ajax({
         url: '/addToCart',

@@ -1,17 +1,47 @@
 window.onload = function(){
-   if(hasSessionCookie()) console.log("have cookies");
-   var button = $("#submit_login"); 
-   button.on('click', logIn);
-   var reg = $("#submit_register")
-   reg.on('click', register);
-   var ap = $("#addprice"); ap.on('click', addprice);
-   var submit = $("#submitbutton");
-   submit.on('click', submitProducts);
-   var farm = $("#addfarmbutton");
-   farm.on('click', addFarm);
-   var signoutbutton = $("#signout");
-   signoutbutton.on("click", signOut);
-   
+    if(hasSessionCookie()) console.log("have cookies");
+
+    var imageLoader = document.getElementById('imageLoader');
+    imageLoader.addEventListener('change', handleImage, false);
+    var canvas = document.getElementById('imageCanvas');
+    var ctx = canvas.getContext('2d');
+    var imgsrc;
+
+    var button = $("#submit_login"); 
+    button.on('click', logIn);
+    var reg = $("#submit_register")
+    reg.on('click', register);
+    var ap = $("#addprice"); ap.on('click', addprice);
+    var submit = $("#submitbutton");
+    submit.on('click', submitProducts);
+    var farm = $("#addfarmbutton");
+    farm.on('click', addFarm);
+    var signoutbutton = $("#signout");
+    signoutbutton.on("click", signOut);
+
+
+    function handleImage(e){
+        var reader = new FileReader();
+        reader.onload = function(event){
+            imgsrc = event.target.result;
+            if(imgsrc.length > 20480 ){
+                alert("Image is too large, must be less than 20KB")
+                imgsrc = "";
+                return;
+            }
+            submit.off('click');
+            submit.on('click', submitProducts.bind({imgsrc: imgsrc, canvas: canvas, ctx:ctx}));
+            var img = new Image();
+            img.src = imgsrc;
+            img.onload = function(){
+                canvas.width = 80;
+                canvas.height = 80;
+                ctx.drawImage(img, 0, 0, 80, 80);
+            }
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
    if(!hasSessionCookie()){
         document.getElementById('addproductpage').style.display = 'none';
         document.getElementById('addfarmpage').style.display = 'none';
@@ -178,18 +208,31 @@ function submitProducts(){
     var description = $("#description").val();
     var units = [];
     var prices = [];
+    
     for(var i = 0; i < $("#pricesdiv").children("div").length; i++){
         var p = Number($("#p"+(i+1)).val());
         var u = $("#u"+(i+1)).val();
         units.push(u);
         prices.push(p);
     }
+    var imgsrc = this.imgsrc;
+    var ctx = this.ctx;
+    var canvas = this.canvas;
 
     $.ajax({
         url: '/addProduct',
         type: 'POST',
-        data: {name: name, category:category, description: description, prices:prices, units: units},
-        success: function(){console.log("success");},
+        data: {name: name, category:category, description: description, prices:prices, units: units, imgsrc:imgsrc},
+        success: function(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            $("#name").val("");
+            $("#category").val("");
+            $("#description").val("");
+            $("#pricesdiv")[0].innerHtml = " <div id=\"d1\"> <label for=\"p1\">Price:  </label><input type=\"text\" name=\"p1\" id=\"p1\"> <label for=\"u1\">Unit:  </label><input type=\"text\" name=\"u1\" id=\"u1\"/> <div id=\"v1\"></div> </div>  ";
+            $("#pricesdiv #p1").val("");
+            $("#pricesdiv #u1").val("");
+
+        },
         error: function(){console.log("not logged in");}
     });
     

@@ -80,7 +80,7 @@ fs.writeFile(__dirname+"/orders.txt", "Product ID\t\t\tAmount\tUnit\tCustomer ID
 function farmGet(req, res){
     console.log("farmget", req.user);
     if(req.user!= undefined){
-        Farmer.findById(req.user.id, functtion(err, farmer){
+        Farmer.findById(req.user.id, function(err, farmer){
             if(farmer){
                 console.log("farmer cookie: " + req.user.id);
                 res.cookie("farmer", req.user.id);
@@ -242,6 +242,7 @@ function addProduct(req, res){
     p.description = req.body.description;
     p.prices = req.body.prices;
     p.units = req.body.units;
+    p.image = req.body.imgsrc;
 
     console.log("req.body: ", req.body);
     Farmer.findById(req.user.id, function(err, farmer){
@@ -257,15 +258,17 @@ function getProducts(request, response){
     var term = request.body.term;
     console.log("term: " + term);
     Product.find({name: term}, function(err, nameResults){
-        console.log(nameResults);
         Product.find({$where:"this.category.indexOf(term)!==-1"}, function(err, catResults){
-            console.log(catResults);
+            /*
             Farm.find({name : term}, function(err, farm){
                 console.log(farm);
                 var farmResults;
                 farm.forEach(function(value){
-                   farmResults = farmResults.concat(value.products); 
+                    Products.find({farm: value._id} function(err, res){
+                        farmResults.concat(res);
+                    }
                 });
+        
                 console.log("found farmname");
                 Farm.find({city : term}, function(err, city){
                     console.log(city);
@@ -287,6 +290,7 @@ function getProducts(request, response){
                     });
                 });
             });
+            */
         });
 
         //TODO: you got to move this to the inner callback
@@ -295,10 +299,11 @@ function getProducts(request, response){
         for(var i = 0; i < nameResults.length; i++){
             Farm.findById(nameResults[i].farm, function(err, farm){
                 counter++;
-                console.log("this: "+this);
                 if(!farm)
                     console.log("NO FARM FOUND! SHOULD NOT HAPPEN");
-                farmData[this] = farm;
+                else{
+                    farmData[this] = farm;
+                }
                 if(counter == nameResults.length){
                     response.status(200); 
                     response.send({nameResults: nameResults, farmData: farmData});
