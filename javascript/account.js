@@ -3,7 +3,7 @@ var AccountPage = function(){
     this.div = $('#accountPage');
     this.currentContent = $("#loginPage");
     this.currentTabInd = 0;
-    this.navStrArr = ["info", "loginInfo", "address", "cards", "history", "signout"];
+    this.navStrArr = ["loginInfo", "signout"];
     this.returnToCheckout = false;
     this.load();
 }
@@ -152,7 +152,7 @@ function changePassword(email, newPw) {
 
 function registerSuccess() {
     console.log("register success: ", this);
-    this.currentContent = $("#editAccountPage");
+    this.currentContent = $("#loginPage");
     this.currentContent.removeClass("hidden");
     $("#registerPage").addClass("hidden");
     $("#invalidRegisterEmailError").addClass("hidden");
