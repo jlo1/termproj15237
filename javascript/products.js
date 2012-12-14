@@ -153,6 +153,11 @@ function addToCart(event){
             break;
         }
     }
+    if(!window.util.hasCookies("customer")) {
+        alert("Please login before adding things to cart");
+        return;
+    }
+
     if(amount === 0 || unit === "none"){
         alert("error, make sure you select a unit and an amount");
         return;
