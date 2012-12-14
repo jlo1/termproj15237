@@ -12,6 +12,7 @@ AccountPage.prototype.load = function(reload) {
     $("#registerPage").addClass("hidden");
     $("#editAccountPage").addClass("hidden");
     $("#accountPage .invalidNote").addClass("hidden");
+    $("#loginInfoContinueBtn").on(window.util.eventstr, changePassword);
     
     //check if already logged in
     if(window.util.hasCookies("customer")){
@@ -78,32 +79,6 @@ AccountPage.prototype.load = function(reload) {
         switchTab.bind(this)($("#accountPage .activeTab"), $(e.target));
     }.bind(this));
     
-    $("#loginInfo #loginInfoContinueBtn").on(window.util.eventstr, function() {
-        var pw1val = $("#chPassword1").val();
-        var pw2val = $("#chPassword2").val();
-        var validChangeForm = true;
-        if(pw1val !== pw2val) {
-            $("#invalidChangePwMatch").removeClass("hidden");
-            validChangeForm = false;
-        }
-        else {
-            $("#invalidChangePwMatch").addClass("hidden");
-        }
-        
-        if(checkPwAllowed(pw1val) === false) {
-            $("#invalidChangePwCond").removeClass("hidden");
-            validChangeForm = false;
-        }
-        else {
-            $("#invalidChangePwCond").addClass("hidden");
-        }
-        
-        if(validChangeForm) {
-            //TODO: Change password!
-            changePassword(email, pw1val);
-            $("#loginInfo input[type=password]").val("");
-        }
-    });
     
 }
 
@@ -169,13 +144,6 @@ function loginFail() {
     $("#loginPassword").val("");
 }
 
-function checkPwAllowed(pw) {
-    if(pw.length < 7) {
-        return false;
-    }
-    return true;
-}
-
 
 function changePassword(email, newPw) {
     alert("Going to change the password of this email's account!");
@@ -201,6 +169,28 @@ function registerSuccess() {
 function registerFail() {
     $("#invalidRegisterEmailError").removeClass("hidden");
     $("#loginPassword").val("");
+}
+
+function changePassword(){
+    var oldPassword = $("#oldPassword").val();
+    var newPassword = $("#chPassword1").val();
+    var checkPassword = $("#chPassword1").val();
+    if(checkPassword !== newPassword){
+        alert("Password do not match");
+        return;
+    }
+    $.ajax({
+        url: '/changePassword',
+        type: 'POST',
+        data: {old:oldPassword, new:newPassword},
+        success: function(){
+            alert("Password changed");
+        },
+        error: function(){
+            alert("error: Unauthorized");
+        }
+
+    });
 }
 
 
@@ -242,16 +232,6 @@ function verifyRegisterForm() {
         invRegMatch.addClass("hidden");
     }
     
-    //check password follows condition (ie: >= 7 chars)
-    if(checkPwAllowed(pw1.val()) === false) {
-        pw1.val("");
-        pw2.val("");
-        invRegCond.removeClass("hidden");
-        validReg = false;
-    }
-    else {
-        invRegCond.addClass("hidden");
-    }
     return validReg;
 
 }

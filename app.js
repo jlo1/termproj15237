@@ -71,6 +71,7 @@ app.all("/getCart", getCart);
 app.all("/removeFromCart", removeFromCart);
 app.all("/emptyCart", emptyCart);
 app.all("/confirmOrder", confirmOrder);
+app.all("/changePassword", changePassword);
 
 fs.writeFile(__dirname+"/orders.txt", "Product ID\tAmount\tUnit\tCustomer ID\tCustomer Name\tAddress 1\tAddress2\tEmail\tPhone\tComments\n");
 
@@ -174,6 +175,33 @@ function checkoutPay(req, res){
             }
         }
     );
+}
+
+function changePassword(req, res){
+    if(req.user === undefined){
+        res.status(401);
+        res.end();
+        return;
+    }
+
+    Customer.findById(req.user.id, function(err, customer){
+        if(!customer){
+            res.status(401);
+            res.end();
+            return;
+        }
+        if(customer.password === req.body.old){
+            customer.password = req.body.new;
+            customer.save();
+            res.status(200);
+            res.end();
+        }
+        else{
+            res.status(401);
+            res.end();
+        }
+    
+    });
 }
 
 function signOut(req, res){
