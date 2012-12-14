@@ -69,6 +69,7 @@ app.post('/checkoutPay', checkoutPay);
 app.all("/addToCart", addToCart);
 app.all("/getCart", getCart);
 app.all("/removeFromCart", removeFromCart);
+app.all("/emptyCart", emptyCart);
 app.all("/confirmOrder", confirmOrder);
 
 fs.writeFile(__dirname+"/orders.txt", "Product ID\tAmount\tUnit\tCustomer ID\tCustomer Name\tAddress 1\tAddress2\tEmail\tPhone\tComments\n");
@@ -462,6 +463,33 @@ function removeFromCart(req, res){
         customer.products.splice(index, 1);
         customer.amounts.splice(index, 1);
         customer.units.splice(index, 1);
+        customer.markModified('amounts');
+        customer.markModified('units');
+        customer.markModified('products');
+        customer.save();
+        res.status(200);
+        res.end();
+    });
+    
+}
+
+function emptyCart(req, res){
+    if(req.user === undefined){
+        res.status(401);
+        res.end();
+        return;
+    }
+
+    Customer.findById(req.user.id, function(err, customer){
+        if(!customer){
+            res.status(401);
+            res.end();
+            return;
+        }
+
+        customer.products = [];
+        customer.amounts = [];
+        customer.units = [];
         customer.markModified('amounts');
         customer.markModified('units');
         customer.markModified('products');

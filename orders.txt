@@ -1,1 +1,6 @@
-Product ID			Amount	Unit	Customer ID
+Product ID	Amount	Unit	Customer ID	Customer Name	Address 1	Address2	Email	Phone	Comments
+50ca97810d4010ba26000004	1	ea	50caa14e5f78b4182d000001	9	9	9	9@.	9	9
+50ca96050d4010ba26000003	2	basket	50caa14e5f78b4182d000001	9	9	9	9@.	9	9
+50ca95810d4010ba26000002	3	lb	50caa14e5f78b4182d000001	9	9	9	9@.	9	9
+50ca91850d4010ba26000001	4	lb	50caa14e5f78b4182d000001	9	9	9	9@.	9	9
+50ca8d21ce8d9f1026000003	5	bunch	50caa14e5f78b4182d000001	9	9	9	9@.	9	9

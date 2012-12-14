@@ -308,5 +308,9 @@ function emptyCart(){
     $("#checkoutContent #email").val("");
     $("#checkoutContent #number").val("");
     $("#checkoutContent #comments").val("");
-    $("#checkoutPage .itemBlock .X").trigger(window.util.eventstr);
+    $.ajax({
+        url: '/emptyCart',
+        type: 'POST',
+        success: addCartSuccess
+    });
 }
