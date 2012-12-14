@@ -18,7 +18,7 @@ HomePage.prototype.load = function() {
     	this.getZipcode.bind(this), this.handleNoGeolocation.bind(this));
 
     //Force user to enter a zipcode/location
-    $("#navFooter").css('display', 'none');
+    $("#navFooter").addClass("hidden");
 
     //trigger search btn click on "enter" key
     $("#zipcodeTxt").keyup(function(e) {
@@ -49,14 +49,13 @@ HomePage.prototype.loadZipcodeSearch = function () {
         this.appDOM.lat = lat;
         this.appDOM.lng = lng;
         this.appDOM.latlng = new google.maps.LatLng(lat, lng);
-        $("#navFooter").css('display', 'block');
+        $("#navFooter").removeClass("hidden");
 
         $("#HomePageBtn").closest(".iconBlock").removeClass("active");
         $("#ProductsPageBtn").closest('.iconBlock').addClass("active");
         this.appDOM.switchTo.bind(this.appDOM)(this.appDOM.pages[2]);
         $("#productsPage #btnRight").trigger(window.util.eventstr);
 
-        $("#navFooter").css('display', 'block');
 
       	console.log("Setting lat " + lat + " and lng " + lng);
         }
