@@ -17,7 +17,7 @@ CustomerApp.prototype.setup = function() {
     Stripe.setPublishableKey(this.stripePKey);
 
     this.addPage(HomePage, "HomePageBtn");
-    this.addPage(BrowsePage, "BrowsePageBtn");
+    this.addPage(AboutPage, "AboutPageBtn");
     this.addPage(ProductsPage, "ProductsPageBtn");
     this.addPage(AccountPage, "AccountPageBtn");
     this.addPage(CheckoutPage, "CheckoutPageBtn");

@@ -13,19 +13,6 @@
 .homeBlock#homeInputBlock {
     background-color: lightgray;
 }
-.homeBlock#homeAboutBlock {
-    background-color: #669966;
-}
-.homeBlock#homeHowBlock {
-    background-color: #666699;
-}
-#homeLogo {
-    background-image: url('/img/logo.png');
-    background-repeat: no-repeat;
-    height: 106px;
-    background-position: center;
-    padding-bottom: 20px;
-}
 
 #homePage #zipcodeBtn {
     position: relative;
@@ -67,6 +54,5 @@
 
 
 .homeBlock p {
-
-
+    padding: 10px;
 }

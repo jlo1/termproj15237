@@ -1,6 +1,14 @@
 /*Contains the style for elements that are shared among pages*/
 
 
+.logo {
+    background-image: url('/img/logo.png');
+    background-repeat: no-repeat;
+    height: 106px;
+    background-position: center;
+    padding-bottom: 20px;
+}
+
 .splitPage ul {
     position: relative;
     width: 80px;
