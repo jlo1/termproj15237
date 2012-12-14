@@ -73,6 +73,7 @@ app.all("/confirmOrder", confirmOrder);
 
 fs.writeFile(__dirname+"/orders.txt", "Product ID\t\t\tAmount\tUnit\tCustomer ID\n");
 
+
 /*
  * Routing handlers.
  */
@@ -318,7 +319,7 @@ function getProducts(request, response){
                     index++;
                 }
 
-                if(counter == results.length){
+                if(counter === results.length){
                     response.status(200); 
                     response.send({results: narrowedResults, farmData: farmData,
                                     farmDistance: farmDistance});

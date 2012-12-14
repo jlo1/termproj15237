@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var productsdb = mongoose.createConnection('mongodb://192.168.1.118/products');
+var productsdb = mongoose.createConnection('mongodb://localhost/products');
 var Product = new Schema({
     name: String,
     description: String,
@@ -9,7 +9,8 @@ var Product = new Schema({
     category: [String],
     farm: {type: Schema.ObjectId, ref: 'Farm'},
     units: [String],
-    prices: [Number]
+    prices: [Number],
+    image: String
 });
 
 Product.methods.validPassword = function(pwd){
