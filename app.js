@@ -541,6 +541,10 @@ function confirmOrder(req, res){
             res.end();
             return;
         }
+        if(req.body.products === undefined){
+            res.status(200);
+            return;
+        }
         var strings = "";
         for(var i = 0; i < req.body.products.length; i++){
             strings = strings+req.body.products[i]+"\t"+req.body.amounts[i]+"\t"+req.body.units[i]+"\t"+req.user.id+"\t"+req.body.name+"\t"+req.body.addr1+"\t"+req.body.addr2+"\t"+req.body.email+"\t"+req.body.phone+"\t"+req.body.comments+"\n";

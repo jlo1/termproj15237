@@ -144,7 +144,7 @@ function stripeResponseHandler (status, response) {
     $("input[name='stripeToken']").remove();
     $("input[name='stripePrice']").remove();
     form.append("<input type='hidden' name='stripeToken' value='" + response.id + "'/>");
-    form.append("<input type='hidden' name='stripePrice' value='" + parseFloat($("#cartPrice").html())*100 + "'/>");
+    form.append("<input type='hidden' name='stripePrice' value='" + Math.round(parseFloat($("#cartPrice").html())*100) + "'/>");
     form.append("<input type='hidden' name='stripeUser' value='TODO: checkout.js:119'/>");
     console.log("About to post token to server");
 

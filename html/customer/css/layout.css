@@ -109,7 +109,7 @@ body {
 
 
 
-@media only screen and (min-height : 0px) and (max-height : 518px) {
+@media only screen and (min-height : 0px) and (max-height : 300px) {
 
     #navFooter {
         display: none;
